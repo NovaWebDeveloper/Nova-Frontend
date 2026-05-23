@@ -10,6 +10,7 @@ function ChatWidget() {
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState("");
     const [firstMessage, setFirstMessage] = useState("");
+    const [notice, setNotice] = useState("");
 
     const customerToken = localStorage.getItem("customerToken");
     const customerUser = JSON.parse(localStorage.getItem("customerUser") || "null");
@@ -25,15 +26,16 @@ function ChatWidget() {
 
     const startChat = async (e) => {
         e.preventDefault();
+        setNotice("");
 
         try {
             if (!customerToken || !customerUser) {
-                alert("Please login first to start chat");
+                setNotice("Please login first to start chat");
                 return;
             }
 
             if (!firstMessage.trim()) {
-                alert("Please write a message");
+                setNotice("Please write a message");
                 return;
             }
 
@@ -51,12 +53,13 @@ function ChatWidget() {
             fetchMessages(res.data.customer.id);
         } catch (err) {
             console.log("Start chat error:", err.response?.data || err.message);
-            alert(err.response?.data?.error || err.response?.data?.message || "Chat start failed");
+            setNotice(err.response?.data?.error || err.response?.data?.message || "Chat start failed");
         }
     };
 
     const sendMessage = async (e) => {
         e.preventDefault();
+        setNotice("");
 
         try {
             if (!newMessage.trim()) return;
@@ -74,12 +77,12 @@ function ChatWidget() {
             if (errorMsg.includes("foreign key")) {
                 localStorage.removeItem("customerId");
                 setCustomerId(null);
-                alert("Old chat expired. Please start a new chat.");
+                setNotice("Old chat expired. Please start a new chat.");
                 return;
             }
 
             console.log("Send message error:", err.response?.data || err.message);
-            alert(errorMsg || "Message send failed");
+            setNotice(errorMsg || "Message send failed");
         }
     };
 
@@ -107,6 +110,8 @@ function ChatWidget() {
                         <h3>NovaWeb Chat</h3>
                         <button onClick={() => setOpen(false)}>×</button>
                     </div>
+
+                    {notice && <div className="chat-notice">{notice}</div>}
 
                     {!customerToken || !customerUser ? (
                         <div className="chat-login-warning">

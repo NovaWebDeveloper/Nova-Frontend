@@ -175,6 +175,20 @@
   backdrop-filter: blur(18px);
 }
 
+.dashboard-message {
+  align-self: center;
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.dashboard-message.error {
+  background: rgba(239, 68, 68, 0.14);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #fca5a5;
+}
+
 .reply-box input {
   flex: 1;
   min-width: 0;

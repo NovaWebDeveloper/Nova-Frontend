@@ -10,6 +10,7 @@ function AdminLogin() {
     email: "",
     password: "",
   });
+  const [message, setMessage] = useState("");
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -17,6 +18,7 @@ function AdminLogin() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setMessage("");
 
     try {
       const res = await API.post("/api/admin/login", form);
@@ -25,7 +27,7 @@ function AdminLogin() {
 
       navigate("/admin-dashboard");
     } catch (err) {
-      alert("Invalid email or password");
+      setMessage("Invalid email or password");
     }
   };
 
@@ -33,6 +35,8 @@ function AdminLogin() {
     <div className="admin-login">
       <form onSubmit={handleLogin} className="login-box">
         <h2>Admin Login</h2>
+
+        {message && <div className="login-message error">{message}</div>}
 
         <input
           type="email"

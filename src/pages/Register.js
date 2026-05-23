@@ -11,6 +11,8 @@ function Register() {
     email: "",
     password: "",
   });
+  const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState("");
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -18,16 +20,23 @@ function Register() {
 
   const registerUser = async (e) => {
     e.preventDefault();
+    setMessage("");
+    setMessageType("");
 
     try {
       await API.post("/api/customer/register", form);
 
       localStorage.setItem("verifyEmail", form.email);
 
-      alert("OTP sent to your email");
-      navigate("/verify-otp");
+      navigate("/verify-otp", {
+        state: {
+          message: "OTP sent to your email",
+          messageType: "success",
+        },
+      });
     } catch (err) {
-      alert(err.response?.data?.message || "Registration failed");
+      setMessage(err.response?.data?.message || "Registration failed");
+      setMessageType("error");
     }
   };
 
@@ -35,6 +44,10 @@ function Register() {
     <div className="auth-page">
       <div className="auth-box">
         <h2>Create Account</h2>
+
+        {message && (
+          <div className={`auth-message ${messageType}`}>{message}</div>
+        )}
 
         <form onSubmit={registerUser}>
           <input

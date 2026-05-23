@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useLocation, useNavigate, Link } from "react-router-dom";
 import API from "../services/api";
 import "./Auth.css";
 
 function CustomerLogin() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [form, setForm] = useState({
     email: "",
@@ -12,6 +13,10 @@ function CustomerLogin() {
   });
 
   const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState(location.state?.message || "");
+  const [messageType, setMessageType] = useState(
+    location.state?.messageType || ""
+  );
 
   const handleChange = (e) => {
     setForm({
@@ -22,6 +27,8 @@ function CustomerLogin() {
 
   const loginCustomer = async (e) => {
     e.preventDefault();
+    setMessage("");
+    setMessageType("");
 
     try {
       setLoading(true);
@@ -36,12 +43,12 @@ function CustomerLogin() {
       localStorage.setItem("customerToken", res.data.token);
       localStorage.setItem("customerUser", JSON.stringify(res.data.user));
 
-      alert("Login successful");
       navigate("/");
     } catch (err) {
       console.log("Customer login error:", err.response?.data || err.message);
 
-      alert(err.response?.data?.message || "Login failed");
+      setMessage(err.response?.data?.message || "Login failed");
+      setMessageType("error");
     } finally {
       setLoading(false);
     }
@@ -51,6 +58,10 @@ function CustomerLogin() {
     <div className="auth-page">
       <div className="auth-box">
         <h2>Customer Login</h2>
+
+        {message && (
+          <div className={`auth-message ${messageType}`}>{message}</div>
+        )}
 
         <form onSubmit={loginCustomer}>
           <input

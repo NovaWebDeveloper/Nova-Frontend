@@ -1,16 +1,23 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useLocation, useNavigate, Link } from "react-router-dom";
 import API from "../services/api";
 import "./Auth.css";
 
 function VerifyOtp() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [otp, setOtp] = useState("");
+  const [message, setMessage] = useState(location.state?.message || "");
+  const [messageType, setMessageType] = useState(
+    location.state?.messageType || ""
+  );
   const email = localStorage.getItem("verifyEmail");
 
   const verifyOtp = async (e) => {
     e.preventDefault();
+    setMessage("");
+    setMessageType("");
 
     try {
       await API.post("/api/customer/verify-otp", {
@@ -18,11 +25,16 @@ function VerifyOtp() {
         otp,
       });
 
-      alert("Email verified successfully");
       localStorage.removeItem("verifyEmail");
-      navigate("/customer-login");
+      navigate("/customer-login", {
+        state: {
+          message: "Email verified successfully",
+          messageType: "success",
+        },
+      });
     } catch (err) {
-      alert(err.response?.data?.message || "OTP verification failed");
+      setMessage(err.response?.data?.message || "OTP verification failed");
+      setMessageType("error");
     }
   };
 
@@ -30,6 +42,10 @@ function VerifyOtp() {
     <div className="auth-page">
       <div className="auth-box">
         <h2>Verify OTP</h2>
+
+        {message && (
+          <div className={`auth-message ${messageType}`}>{message}</div>
+        )}
 
         <form onSubmit={verifyOtp}>
           <input

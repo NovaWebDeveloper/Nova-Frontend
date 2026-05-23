@@ -11,6 +11,7 @@ function AdminDashboard() {
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [messages, setMessages] = useState([]);
   const [reply, setReply] = useState("");
+  const [statusMessage, setStatusMessage] = useState("");
 
   useEffect(() => {
     const token = localStorage.getItem("adminToken");
@@ -43,6 +44,7 @@ function AdminDashboard() {
     e.preventDefault();
 
     if (!reply.trim() || !selectedCustomer) return;
+    setStatusMessage("");
 
     try {
       await API.post("/api/admin/reply", {
@@ -54,7 +56,7 @@ function AdminDashboard() {
       fetchMessages(selectedCustomer);
     } catch (err) {
       console.log("Reply failed", err);
-      alert("Reply send nahi hua");
+      setStatusMessage("Reply send nahi hua");
     }
   };
 
@@ -136,6 +138,10 @@ function AdminDashboard() {
             </div>
 
             <form onSubmit={sendReply} className="reply-box">
+              {statusMessage && (
+                <div className="dashboard-message error">{statusMessage}</div>
+              )}
+
               <input
                 type="text"
                 placeholder="Type your reply..."
