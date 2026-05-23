@@ -11,15 +11,27 @@ function CustomerLogin() {
     password: "",
   });
 
+  const [loading, setLoading] = useState(false);
+
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value,
+    });
   };
 
   const loginCustomer = async (e) => {
     e.preventDefault();
 
     try {
-      const res = await API.post("/api/customer/login", form);
+      setLoading(true);
+
+      const loginData = {
+        email: form.email.trim().toLowerCase(),
+        password: form.password,
+      };
+
+      const res = await API.post("/api/customer/login", loginData);
 
       localStorage.setItem("customerToken", res.data.token);
       localStorage.setItem("customerUser", JSON.stringify(res.data.user));
@@ -27,7 +39,11 @@ function CustomerLogin() {
       alert("Login successful");
       navigate("/");
     } catch (err) {
+      console.log("Customer login error:", err.response?.data || err.message);
+
       alert(err.response?.data?.message || "Login failed");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -55,7 +71,9 @@ function CustomerLogin() {
             required
           />
 
-          <button type="submit">Login</button>
+          <button type="submit" disabled={loading}>
+            {loading ? "Logging in..." : "Login"}
+          </button>
         </form>
 
         <p>
