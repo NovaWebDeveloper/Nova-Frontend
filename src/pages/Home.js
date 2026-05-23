@@ -54,17 +54,64 @@ function Home() {
 
       {/* Hero Section */}
       <section className="hero">
-        <h1>Build Your Dream Website</h1>
+        <div className="hero-content">
+          <span className="hero-kicker">NovaWeb Developer</span>
 
-        <p>
-          Modern, responsive and professional websites
-          for businesses and brands.
-        </p>
+          <h1>Build Your Dream Website</h1>
+
+          <p>
+            Modern, responsive and professional websites for businesses,
+            creators and online brands.
+          </p>
+
+          <div className="hero-actions">
+            <a href="#services" className="primary-action">View Services</a>
+            <a href="#chat" className="secondary-action">Start Chat</a>
+          </div>
+        </div>
+
+        <div className="hero-showcase" aria-hidden="true">
+          <div className="showcase-top">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <div className="showcase-screen">
+            <div className="screen-sidebar"></div>
+            <div className="screen-main">
+              <div className="screen-line wide"></div>
+              <div className="screen-line"></div>
+              <div className="screen-grid">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="highlights" aria-label="Website highlights">
+        <div>
+          <strong>100%</strong>
+          <span>Responsive Design</span>
+        </div>
+        <div>
+          <strong>Fast</strong>
+          <span>Modern React UI</span>
+        </div>
+        <div>
+          <strong>Secure</strong>
+          <span>Login and Admin Flow</span>
+        </div>
       </section>
 
       {/* Services Section */}
       <section id="services" className="services">
         <h2>My Services</h2>
+        <p className="section-lead">
+          Choose a clean package or message me for a custom website plan.
+        </p>
 
         <div className="service-grid">
 
@@ -139,19 +186,23 @@ function Home() {
 
       {/* Chat Section */}
       <section id="chat" className="chat-box">
-        <h2>Chat With Me</h2>
+        <div>
+          <h2>Chat With Me</h2>
 
-        {customerUser ? (
-          <p className="chat-info">
-            Click the chat button at bottom-right
-            to start chatting with me.
-          </p>
-        ) : (
-          <p className="chat-info">
-            Please register or login first to chat
-            with NovaWeb Developer.
-          </p>
-        )}
+          {customerUser ? (
+            <p className="chat-info">
+              Click the chat button at bottom-right to start chatting with me.
+            </p>
+          ) : (
+            <p className="chat-info">
+              Please register or login first to chat with NovaWeb Developer.
+            </p>
+          )}
+        </div>
+
+        <a href={customerUser ? "#chat" : "/customer-login"} className="chat-cta">
+          {customerUser ? "Open Chat Button" : "Login to Chat"}
+        </a>
       </section>
 
       {/* Chat Widget */}
